@@ -81,6 +81,17 @@
       .canvas1 {
         margin-left: 550px;
       }
+      button {
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
     </style>
   </head>
   <body style="text-align: center; ">
@@ -145,7 +156,7 @@
       <hr>
       <br>
       <div class="lab canvas1">
-        <h2 class="lab-title" style="margin-right: 500px;">Additional Chart: World Wide Wine Production 2018</h2>
+        <h2 class="lab-title" style="margin-right: 500px;">ข้อมูลประชากรในแต่ละประเทศ 2018</h2>
         <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
       </div>
       <br>
@@ -292,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
             options: {
               title: {
                 display: true,
-                text: "World Wide Wine Production 2018"
+                text: "ข้อมูลประชากรในแต่ละประเทศ"
               }
             }
           });
