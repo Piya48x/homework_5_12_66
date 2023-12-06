@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>W3.CSS Template</title>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>W3.CSS Template</title>
+    <link
+      rel="stylesheet"
+      href="https://www.w3schools.com/w3css/4/w3.css"
+    />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Inconsolata"
@@ -26,16 +29,24 @@
       .menu {
         display: none;
       }
+
+      #result {
+        margin-top: 20px;
+      }
     </style>
   </head>
   <body>
-    <div class="w3-top">
+    <div>
       <div class="w3-row w3-padding w3-black">
         <div class="w3-col s3">
-          <a href="./index.html" class="w3-button w3-block w3-black">HOME</a>
+          <a href="./index.html" class="w3-button w3-block w3-black"
+            >HOME</a
+          >
         </div>
         <div class="w3-col s3">
-          <a href="./java.html" class="w3-button w3-block w3-black">JAVA JS</a>
+          <a href="./java.html" class="w3-button w3-block w3-black"
+            >JAVA JS</a
+          >
         </div>
         <div class="w3-col s3">
           <a href="./api.html" class="w3-button w3-block w3-black">APIs</a>
@@ -45,9 +56,162 @@
         </div>
       </div>
       <h1>API</h1>
+      <hr />
+      <h2>Lab 2</h2>
+      <form id="zipcodeForm">
+        <label for="zipcode">รหัสไปรษณีย์:</label>
+        <input type="text" id="zipcode" name="zipcode" />
+        
+        <button type="button" onclick="getAddress()">ค้นหา</button>
+        <div id="result1"></div>
+        <br>
+        <br>
+        <button type="button" onclick="getRandomDogImage()">สุ่มรูปหมา</button>
+        <div id="result2"></div>
+        <br>
+        <br>
+        <button type="button" onclick="getCryptoPriceWithHistory('bitcoin')">ดึงราคา Bitcoin</button>
+        <div id="result3"></div>
+        <br>
+        <hr>
+        <br>
+        
+      </form>
+
       
+      
+      
+      <form
+        method="POST"
+        action="https://script.google.com/macros/s/AKfycbyIq_Mo2UZVw8oYOdTQoaMTDS6xigvojY00Ezm07hoI9yCGvKbEkz3D1CWFLRXauwd8DA/exec"
+      >
+        <input name="Email" type="email" placeholder="Email" required />
+        <input name="Name" type="text" placeholder="Name" required />
+        <input name="Topic" type="text" placeholder="Topic" required />
+        <button type="submit">Send</button>
+      </form>
+      <div>
+        <hr />
+      </div>
     </div>
 
-    <!-- Links (sit on top) -->
+    <script>
+      function getAddress() {
+        var zipcode = document.getElementById("zipcode").value;
+
+        fetch(`https://api.zippopotam.us/th/${zipcode}`)
+          .then((response) => response.json())
+          .then((data) => {
+            displayAddressResult(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      }
+
+      function getRandomDogImage() {
+        fetch("https://dog.ceo/api/breeds/image/random")
+          .then((response) => response.json())
+          .then((data) => {
+            displayDogImageResult(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching dog image:", error);
+          });
+      }
+
+      function getCryptoPrice(cryptoSymbol) {
+        fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoSymbol}&vs_currencies=usd`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            displayCryptoPriceResult(data, cryptoSymbol);
+          })
+          .catch((error) => {
+            console.error(`Error fetching ${cryptoSymbol} price:`, error);
+          });
+      }
+
+      function displayAddressResult(data) {
+        var resultContainer = document.getElementById("result1");
+
+        resultContainer.innerHTML = "";
+
+        if (data.places) {
+          data.places.forEach((place) => {
+            var placeName = place["place name"];
+            var state = place["state"];
+
+            var resultText = `${placeName}, ${state}`;
+            var resultParagraph = document.createElement("p");
+            resultParagraph.textContent = resultText;
+
+            resultContainer.appendChild(resultParagraph);
+          });
+        } else {
+          resultContainer.textContent =
+            "ไม่พบข้อมูลสำหรับรหัสไปรษณีย์นี้";
+        }
+      }
+
+      function displayDogImageResult(data) {
+        var resultContainer = document.getElementById("result2");
+
+        resultContainer.innerHTML = "";
+
+        if (data.status === "success") {
+          var dogImage = document.createElement("img");
+          dogImage.src = data.message;
+          dogImage.alt = "Random Dog";
+
+          resultContainer.appendChild(dogImage);
+        } else {
+          resultContainer.textContent =
+            "ไม่สามารถดึงรูปหมาได้ในขณะนี้";
+        }
+      }
+
+      var bitcoinPriceHistory = [];
+
+      function getCryptoPriceWithHistory(cryptoSymbol) {
+        fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoSymbol}&vs_currencies=usd`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            displayCryptoPriceResult(data, cryptoSymbol);
+            storeCryptoPriceInHistory(data, cryptoSymbol);
+          })
+          .catch((error) => {
+            console.error(`Error fetching ${cryptoSymbol} price:`, error);
+          });
+      }
+
+      function storeCryptoPriceInHistory(data, cryptoSymbol) {
+        if (data[cryptoSymbol]) {
+          var price = data[cryptoSymbol].usd;
+          bitcoinPriceHistory.push({ symbol: cryptoSymbol, price: price });
+        }
+      }
+
+      function displayCryptoPriceResult(data, cryptoSymbol) {
+        var resultContainer = document.getElementById("result3");
+
+        resultContainer.innerHTML = "";
+
+        if (data[cryptoSymbol]) {
+          var price = data[cryptoSymbol].usd;
+          var resultText = `ราคา ${cryptoSymbol.toUpperCase()}: ${price} USD`;
+          var resultParagraph = document.createElement("p");
+          resultParagraph.textContent = resultText;
+
+          resultContainer.appendChild(resultParagraph);
+        } else {
+          resultContainer.textContent =
+            `ไม่สามารถดึงราคา ${cryptoSymbol.toUpperCase()} ได้ในขณะนี้`;
+        }
+      }
+    </script>
   </body>
 </html>

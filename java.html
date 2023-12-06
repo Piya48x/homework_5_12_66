@@ -9,6 +9,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Inconsolata"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="./country-by-population.json"></script>
     <style>
       body,
       html {
@@ -127,8 +129,24 @@
         <input type="text" name="" id="factorialInput" />
         <button type="button" onclick="factorial()">คำนวณ</button>
         <p id="factorialResult" class="result"></p>
-      </div>
 
+      </div>
+      <br>
+      <hr>
+      <br>
+      <div class="lab">
+        <h2 class="lab-title">Additional Chart: World Wide Wine Production 2018</h2>
+        <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+      </div>
+      <br>
+      <hr>
+      <br>
+      <canvas id="populationChart" width="800" height="400"></canvas>
+
+  <br>
+  <hr>
+  <br>
+  <canvas id="myChart1" style="width:100%;max-width:600px"></canvas>
       <br />
       <footer class="w3-center w3-light-grey w3-padding-48 w3-large">
         <p>
@@ -211,7 +229,70 @@ function calculateFactorial(n) {
     return n * calculateFactorial(n - 1);
   }
 }
+function getPopulationData() {
+    return [
+        { "country": "Afghanistan", "population": 37172386 },
+        // ... (all other countries)
+        { "country": "Zimbabwe", "population": 14439018 }
+    ];
+}
+document.addEventListener("DOMContentLoaded", function () {
+            // Get data from the external JavaScript file
+            var data = getPopulationData();
 
+            // Extract country names and populations
+            var countries = data.map(entry => entry.country);
+            var populations = data.map(entry => entry.population);
+
+            // Create a bar chart
+            var ctx = document.getElementById('populationChart').getContext('2d');
+            var populationChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: countries,
+                    datasets: [{
+                        label: 'Population',
+                        data: populations,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+        const xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+      const yValues = [55, 49, 44, 24, 15];
+      const barColors = [
+        "#b91d47",
+        "#00aba9",
+        "#2b5797",
+        "#e8c3b9",
+        "#1e7145"
+      ];
+
+      new Chart("myChart", {
+        type: "pie",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: "World Wide Wine Production 2018"
+          }
+        }
+      });
     </script>
   </body>
 </html>
