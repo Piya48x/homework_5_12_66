@@ -11,13 +11,17 @@
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="./country-by-population.json"></script>
+    <script></script>
     <style>
-      body,
-      html {
-        height: 100%;
-        font-family: "Inconsolata", sans-serif;
-        overflow: auto;
+       body {
+       
+        align-items: center;
+        justify-content: center;
+        height: 100vh; /* Set the height of the body to 100% of the viewport height */
+        margin: 0; /* Remove default margin */
+        text-align: center;
       }
+     
 
       .bgimg {
         background-position: center;
@@ -40,10 +44,12 @@
         font-weight: bold;
         margin-top: 20px;
         
+        
       }
 
       .lab-description {
         margin-bottom: 20px;
+        
         
       }
 
@@ -70,10 +76,14 @@
         overflow-y: auto;
         border: 1px solid #ccc;
         padding: 10px;
+        margin-left: 550px;
+      }
+      .canvas1 {
+        margin-left: 550px;
       }
     </style>
   </head>
-  <body>
+  <body style="text-align: center; ">
     <div>
       <div class="w3-row w3-padding w3-black">
         <div class="w3-col s3">
@@ -134,14 +144,14 @@
       <br>
       <hr>
       <br>
-      <div class="lab">
-        <h2 class="lab-title">Additional Chart: World Wide Wine Production 2018</h2>
+      <div class="lab canvas1">
+        <h2 class="lab-title" style="margin-right: 500px;">Additional Chart: World Wide Wine Production 2018</h2>
         <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
       </div>
       <br>
       <hr>
       <br>
-      <canvas id="populationChart" width="800" height="400"></canvas>
+      <canvas id="populationChart" width="300" height="200"></canvas>
 
   <br>
   <hr>
@@ -161,7 +171,6 @@
         </p>
       </footer>
     </div>
-
     <script>
       function addNumbers() {
         var num1 = prompt("Enter the first number:");
@@ -229,17 +238,11 @@ function calculateFactorial(n) {
     return n * calculateFactorial(n - 1);
   }
 }
-function getPopulationData() {
-    return [
-        { "country": "Afghanistan", "population": 37172386 },
-        // ... (all other countries)
-        { "country": "Zimbabwe", "population": 14439018 }
-    ];
-}
 document.addEventListener("DOMContentLoaded", function () {
-            // Get data from the external JavaScript file
-            var data = getPopulationData();
-
+        // Fetch data from the JSON file
+        fetch('/country-by-population.json')
+          .then(response => response.json())
+          .then(data => {
             // Extract country names and populations
             var countries = data.map(entry => entry.country);
             var populations = data.map(entry => entry.population);
@@ -247,52 +250,54 @@ document.addEventListener("DOMContentLoaded", function () {
             // Create a bar chart
             var ctx = document.getElementById('populationChart').getContext('2d');
             var populationChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: countries,
-                    datasets: [{
-                        label: 'Population',
-                        data: populations,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+              type: 'bar',
+              data: {
+                labels: countries,
+                datasets: [{
+                  label: 'Population',
+                  data: populations,
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
                 }
+              }
             });
-        });
-        const xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-      const yValues = [55, 49, 44, 24, 15];
-      const barColors = [
-        "#b91d47",
-        "#00aba9",
-        "#2b5797",
-        "#e8c3b9",
-        "#1e7145"
-      ];
-
-      new Chart("myChart", {
-        type: "pie",
-        data: {
-          labels: xValues,
-          datasets: [{
-            backgroundColor: barColors,
-            data: yValues
-          }]
-        },
-        options: {
-          title: {
-            display: true,
-            text: "World Wide Wine Production 2018"
-          }
-        }
+          })
+          .catch(error => console.error('Error fetching data:', error));
       });
+        
+        fetch('./country-by-population.json')
+        .then(response => response.json())
+        .then(data => {
+          const xValues = data.map(entry => entry.country);
+          const yValues = data.map(entry => entry.population);
+          const barColors = ["#b91d47", "#00aba9", "#2b5797", "#e8c3b9", "#1e7145"];
+
+          new Chart("myChart", {
+            type: "pie",
+            data: {
+              labels: xValues,
+              datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+              }]
+            },
+            options: {
+              title: {
+                display: true,
+                text: "World Wide Wine Production 2018"
+              }
+            }
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
     </script>
   </body>
 </html>
